@@ -153,40 +153,38 @@ describe(">>>>>>>>>>>> Test Register User API <<<<<<<<<<<<<", () => {
         done();
       });
   });
-  // it(">>>>> Failure : User already exists", function (done) {
-  //   chai
-  //     .request(server)
-  //     .post("/add-user")
-  //     .send({
-  //       firstName: "Paul Oluyege",
-  // lastName: "Paul Oluyege",
-  //       email: "testUser1@gmail.com",
-  //     })
-  //     .end((err, response) => {
-  //       if(response.status)
-  //       expect(response.status).to.be.equal(400);
-  //       response.body.should.have.property('message');
-  //       response.body.message.should.equal('User already exists.');
-  //       done();
-  //     });
-  // });
-  // it(">>>>> Success : User created success", function (done) {
-  //   chai
-  //     .request(server)
-  //     .post("/add-user")
-  //     .send({
-  //       firstName: "Paul Oluyege",
-  // lastName: "Paul Oluyege",
-  //       email: "testUser1@gmail.com",
-  //     })
-  //     .end((err, response) => {
-  //       if(response.status)
-  //       expect(response.status).to.be.equal(200);
-  //       response.body.should.have.property('message');
-  //       response.body.message.should.equal('User register successfully.');
-  //       done();
-  //     });
-  // });
+  it(">>>>> Failure : User already exists", function (done) {
+    chai
+      .request(server)
+      .post("/add-user")
+      .send({
+        firstName: "Paul Oluyege",
+        lastName: "Paul Oluyege",
+        email: "testUser1@gmail.com",
+      })
+      .end((err, response) => {
+        if (response.status) expect(response.status).to.be.equal(400);
+        response.body.should.have.property("message");
+        response.body.message.should.equal("User already exists.");
+        done();
+      });
+  });
+  it(">>>>> Success : User created success", function (done) {
+    chai
+      .request(server)
+      .post("/add-user")
+      .send({
+        firstName: "Paul Oluyege",
+        lastName: "Paul Oluyege",
+        email: "testUser1@gmail.com",
+      })
+      .end((err, response) => {
+        if (response.status) expect(response.status).to.be.equal(200);
+        response.body.should.have.property("message");
+        response.body.message.should.equal("User register successfully.");
+        done();
+      });
+  });
 });
 
 describe(">>>>>>>>>>>> Test Login API <<<<<<<<<<<<", () => {
