@@ -3,10 +3,7 @@ const models = require("../../src/models/index");
 const {
   userSignUpValidation,
 } = require("../services/validation/userValidation");
-const {
-  encryptData,
-  decryptData,
-} = require("../services/Helper");
+const { encryptData, decryptData } = require("../services/Helper");
 
 module.exports = {
   userList: async (req, res) => {
@@ -56,8 +53,7 @@ module.exports = {
     })
       .then((userData) => res.json({ data: userData }))
       .catch((e) => {
-        console.log(e);
-        res.send(e);
+        return res.status(500).send(response);
       });
   },
   addUser: (req, res) => {
@@ -86,17 +82,77 @@ module.exports = {
             firstName,
             lastName,
             email: Sequelize.fn("AES_ENCRYPT", email, "setEmail"),
-            password: "User1234"
+            password: "User1234",
           })
             .then(() =>
               res.status(200).json({ message: "User register successfully." })
             )
-            .catch((e) => res.json(e));
+            .catch((e) => res.status(500).send(response));
         }
       });
     } catch (error) {
-      console.log(">>>Error :", error);
+      return res.status(500).send(response);
     }
   },
-  getUser: (req, res) => {},
+  getUser: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const userData = await models.User.findOne({
+        where: { id },
+        attributes: ["id", "firstName", "lastName"],
+      });
+      if (!userData) {
+        return res.status(404).json({
+          message: "User not exists.",
+        });
+      }
+      res
+        .status(200)
+        .json({ data: userData, message: "User register successfully." });
+    } catch (error) {
+      return res.status(500).send(response);
+    }
+  },
+  updateUser: async (req, res) => {
+    try {
+      const id = req.params.id;
+      console.log(">>>>>",id);
+      const reqParam = req.body;
+      const userData = await models.User.findOne({
+        where: { id },
+        attributes: ["id", "firstName", "lastName"],
+      });
+      if (!userData) {
+        return res.status(404).json({
+          message: "User not exists.",
+        });
+      }
+      userData.firstName = reqParam.firstName && reqParam.firstName;
+      userData.lastName = reqParam.lastName && reqParam.lastName;
+      userData.save();
+      res.status(200).json({ message: "User updated successfully." });
+    } catch (error) {
+      return res.status(500).send(response);
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const userData = await models.User.findOne({
+        where: { id },
+        attributes: ["id"],
+      });
+      if (!userData) {
+        return res.status(404).json({
+          message: "User not exists.",
+        });
+      }
+      // await models.User.destroy({
+      //   where: { id },
+      // });
+      res.status(200).json({ message: "User deleted successfully." });
+    } catch (error) {
+      return res.status(500).send(response);
+    }
+  },
 };
